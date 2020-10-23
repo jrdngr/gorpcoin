@@ -1,4 +1,4 @@
-use gorpcoin::{Block, Blockchain};
+use gorp_blockchain::{Block, Blockchain};
 
 pub struct Miner;
 
