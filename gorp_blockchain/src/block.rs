@@ -61,6 +61,15 @@ impl Block {
         hash
     }
 
+    pub fn hash_string(&self) -> String {
+        let hash_string = self.hash()
+            .into_iter()
+            .map(|byte| format!("{:x}", byte))
+            .collect();
+        
+        hash_string
+    }
+
     pub fn is_valid(&self, difficulty: u8) -> bool {
         utils::has_valid_prefix(&self.hash(), difficulty)
     }

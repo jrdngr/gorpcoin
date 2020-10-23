@@ -13,7 +13,7 @@ impl Miner {
             if block.is_valid(difficulty) {
                 match blockchain.add_block(&block) {
                     Ok(_) => {
-                        println!("Successfully added block");
+                        println!("Successfully added block with hash 0x{}", block.hash_string());
                         return;
                     },
                     Err(e) => {
