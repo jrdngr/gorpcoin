@@ -28,15 +28,10 @@ impl Miner {
 
 pub fn main() {
     let mut blockchain = Blockchain::new();
-    dbg!(blockchain.current_difficulty());
-    dbg!(blockchain.len());
 
     let data = b"Hello!";
     Miner::mine_coin(data, &mut blockchain);
-    dbg!(blockchain.len());
 
     let data = b"Hi!";
-    Miner::mine_coin(data, &mut blockchain);
-    dbg!(blockchain.len());
-    
+    Miner::mine_coin(data, &mut blockchain);    
 }
