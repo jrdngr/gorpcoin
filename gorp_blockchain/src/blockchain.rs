@@ -7,14 +7,16 @@ pub struct Blockchain<T = Vec<u8>> {
     blocks: Vec<Block<T>>,
 }
 
-impl Blockchain {
+impl<T> Blockchain<T> 
+where T: AsRef<[u8]>
+{
     pub fn new() -> Self {
         Self {
             blocks: Vec::new(),
         }
     }
 
-    pub fn blocks(&self) -> &[Block] {
+    pub fn blocks(&self) -> &[Block<T>] {
         &self.blocks
     }
 
@@ -33,7 +35,7 @@ impl Blockchain {
         difficulty_function(self.len())
     }
 
-    pub fn add_block(&mut self, block: &Block) -> GorpCoinResult<()> {
+    pub fn add_block(&mut self, block: Block<T>) -> GorpCoinResult<()> {
         let hash = block.hash();
         let difficulty = self.current_difficulty();
                 
@@ -50,7 +52,7 @@ impl Blockchain {
             return Err(GorpCoinError::InvalidPreviousHash);
         }
 
-        self.blocks.push(block.clone());
+        self.blocks.push(block);
 
         Ok(())
     }

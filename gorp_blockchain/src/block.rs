@@ -10,10 +10,12 @@ pub struct Block<T = Vec<u8>> {
     nonce: u64,
 }
 
-impl Block {
-    pub fn new(data: &[u8], previous_hash: &[u8], nonce: u64) -> Self {
+impl<T> Block<T> 
+where T: AsRef<[u8]>,
+{
+    pub fn new(data: T, previous_hash: &[u8], nonce: u64) -> Self {
         Self {
-            data: data.to_vec(),
+            data,
             timestamp: utils::unix_time(),
             previous_hash: previous_hash.to_vec(),
             nonce,
@@ -29,7 +31,7 @@ impl Block {
         }
     }
 
-    pub fn data(&self) -> &[u8] {
+    pub fn data(&self) -> &T {
         &self.data
     }
 
@@ -86,7 +88,7 @@ mod tests {
         let nonce = 0;
 
         let block = Block::new(data, &previous_hash, nonce);
-        assert_eq!(block.data(), b"Hello!");
+        assert_eq!(block.data(), &b"Hello!");
         assert_eq!(block.previous_hash(), &[0]);
         assert_eq!(block.nonce(), 0);
     }
