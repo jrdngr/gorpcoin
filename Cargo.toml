@@ -1,0 +1,10 @@
+[package]
+name = "gorpcoin"
+version = "0.1.0"
+authors = ["Jordan Grace <jordan.t.grace@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+serde = "^1.0"
+serde_json = "^1.0"
+sha3 = "^0.9"
