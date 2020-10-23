@@ -50,11 +50,17 @@ impl Blockchain {
             return Err(GorpCoinError::InvalidPreviousHash);
         }
 
+        self.blocks.push(block.clone());
+
         Ok(())
     }
 }
 
 fn difficulty_function(length: usize) -> u8 {
+    if length == 0 {
+        return 1;
+    }
+
     let length = length as u32;
     let length = f64::from(length + 1);
     let difficulty = length.log10() + 1.0;
@@ -68,9 +74,9 @@ mod tests {
 
     #[test]
     fn test_difficulty_function() {
-        assert_eq!(difficulty_function(0), 0);
-        assert_eq!(difficulty_function(10), 1);
-        assert_eq!(difficulty_function(50), 1);
-        assert_eq!(difficulty_function(100), 2);
+        assert_eq!(difficulty_function(0), 1);
+        assert_eq!(difficulty_function(10), 2);
+        assert_eq!(difficulty_function(50), 2);
+        assert_eq!(difficulty_function(100), 3);
     }
 }

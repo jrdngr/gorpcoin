@@ -10,10 +10,15 @@ impl Miner {
         
         loop {
             let block = Block::new(data, &previous_hash, nonce);
-            // println!("{}: {:?}", nonce, block.hash());
             if block.is_valid(difficulty) {
-                if let Err(_) = blockchain.add_block(&block) {
-                    continue;
+                match blockchain.add_block(&block) {
+                    Ok(_) => {
+                        println!("Successfully added block");
+                        return;
+                    },
+                    Err(e) => {
+                        dbg!(e);
+                    }
                 }
             }
             nonce += 1;
