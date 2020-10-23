@@ -3,8 +3,8 @@ use serde::{Serialize, Deserialize};
 use crate::{utils, Block, GorpCoinError, GorpCoinResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Blockchain {
-    blocks: Vec<Block>,
+pub struct Blockchain<T = Vec<u8>> {
+    blocks: Vec<Block<T>>,
 }
 
 impl Blockchain {

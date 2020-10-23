@@ -3,8 +3,8 @@ use serde::{Serialize, Deserialize};
 use crate::utils;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Block {
-    data: Vec<u8>,
+pub struct Block<T = Vec<u8>> {
+    data: T,
     timestamp: u64,
     previous_hash: Vec<u8>,
     nonce: u64,
