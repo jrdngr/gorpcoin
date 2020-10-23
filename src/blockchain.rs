@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 
-use crate::{Block, GorpCoinError, GorpCoinResult};
+use crate::{utils, Block, GorpCoinError, GorpCoinResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Blockchain {
@@ -22,20 +22,22 @@ impl Blockchain {
         self.blocks.len()
     }
 
+    pub fn last_hash(&self) -> Vec<u8> {
+        self.blocks
+            .last()
+            .map(|block| block.hash())
+            .unwrap_or_else(|| vec![0])
+    }
+
     pub fn current_difficulty(&self) -> u8 {
         difficulty_function(self.len())
     }
 
     pub fn add_block(&mut self, block: &Block) -> GorpCoinResult<()> {
         let hash = block.hash();
-        let difficulty = self.current_difficulty() as usize;
-        
-        let valid_prefix = hash
-            .iter()
-            .take(difficulty)
-            .all(|b| *b == 0);
-        
-        if !valid_prefix {
+        let difficulty = self.current_difficulty();
+                
+        if !utils::has_valid_prefix(&hash, difficulty) {
             return Err(GorpCoinError::IncorrectDifficulty);
         }
 
@@ -54,8 +56,8 @@ impl Blockchain {
 
 fn difficulty_function(length: usize) -> u8 {
     let length = length as u32;
-    let length = f64::from(length);
-    let difficulty = length.log10();
+    let length = f64::from(length + 1);
+    let difficulty = length.log10() + 1.0;
 
     difficulty as u8
 }

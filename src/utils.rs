@@ -6,3 +6,12 @@ pub fn unix_time() -> u64 {
         Err(_) => 0,
     }
 }
+
+pub fn has_valid_prefix(hash: &[u8], difficulty: u8) -> bool {
+    let difficulty = difficulty as usize;
+
+    hash
+        .iter()
+        .take(difficulty)
+        .all(|b| *b == 0)
+}

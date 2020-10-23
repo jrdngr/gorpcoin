@@ -1,19 +1,30 @@
 use serde::{Serialize, Deserialize};
 
+use crate::utils;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Block {
     data: Vec<u8>,
     timestamp: u64,
-    nonce: u64,
     previous_hash: Vec<u8>,
+    nonce: u64,
 }
 
 impl Block {
     pub fn new(data: &[u8], previous_hash: &[u8], nonce: u64) -> Self {
         Self {
             data: data.to_vec(),
+            timestamp: utils::unix_time(),
             previous_hash: previous_hash.to_vec(),
-            timestamp: crate::utils::unix_time(),
+            nonce,
+        }
+    }
+
+    pub fn with_nonce(self, nonce: u64) -> Self {
+        Self {
+            data: self.data,
+            timestamp: self.timestamp,
+            previous_hash: self.previous_hash,
             nonce,
         }
     }
@@ -26,12 +37,12 @@ impl Block {
         self.timestamp
     }
 
-    pub fn nonce(&self) -> u64 {
-        self.nonce
-    }
-
     pub fn previous_hash(&self) -> &[u8] {
         &self.previous_hash
+    }
+
+    pub fn nonce(&self) -> u64 {
+        self.nonce
     }
 
     pub fn hash(&self) -> Vec<u8> {
@@ -43,9 +54,15 @@ impl Block {
         hasher.update(&self.nonce.to_le_bytes());
         hasher.update(&self.previous_hash);
 
-        hasher.finalize()
+        let hash = hasher.finalize()
             .into_iter()
-            .collect()
+            .collect();
+
+        hash
+    }
+
+    pub fn is_valid(&self, difficulty: u8) -> bool {
+        utils::has_valid_prefix(&self.hash(), difficulty)
     }
 }
 
