@@ -1,8 +1,8 @@
 use std::time::Instant;
-use gorp_blockchain::{Block, Blockchain};
+use gorp_blockchain::{Block, Blockchain, BlockData};
 
 pub fn mine_coin<T>(data: T, blockchain: &mut Blockchain<T>) 
-where T: AsRef<[u8]>,
+where T: BlockData,
       T: Clone,
 {
     let start_time = Instant::now();

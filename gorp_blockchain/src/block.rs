@@ -1,6 +1,7 @@
 use serde::{Serialize, Deserialize};
 
 use crate::utils;
+use crate::BlockData;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Block<T = Vec<u8>> {
@@ -11,7 +12,7 @@ pub struct Block<T = Vec<u8>> {
 }
 
 impl<T> Block<T> 
-where T: AsRef<[u8]>,
+where T: BlockData,
 {
     pub fn new(data: T, previous_hash: &[u8], nonce: u64) -> Self {
         Self {
@@ -51,7 +52,7 @@ where T: AsRef<[u8]>,
         use sha3::{Digest, Sha3_256};
 
         let mut hasher = Sha3_256::new();
-        hasher.update(&self.data);
+        hasher.update(&self.data.into_bytes());
         hasher.update(&self.timestamp.to_le_bytes());
         hasher.update(&self.nonce.to_le_bytes());
         hasher.update(&self.previous_hash);
@@ -83,12 +84,12 @@ mod tests {
 
     #[test]
     fn new_block() {
-        let data = b"Hello!";
+        let data = Vec::from("Hello!");
         let previous_hash = [0];
         let nonce = 0;
 
         let block = Block::new(data, &previous_hash, nonce);
-        assert_eq!(block.data(), &b"Hello!");
+        assert_eq!(block.data(), &Vec::from("Hello!"));
         assert_eq!(block.previous_hash(), &[0]);
         assert_eq!(block.nonce(), 0);
     }

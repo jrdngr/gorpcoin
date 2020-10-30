@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 
-use crate::{utils, Block, GorpCoinError, GorpCoinResult};
+use crate::{utils, Block, BlockData, GorpCoinError, GorpCoinResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Blockchain<T = Vec<u8>> {
@@ -8,7 +8,7 @@ pub struct Blockchain<T = Vec<u8>> {
 }
 
 impl<T> Blockchain<T> 
-where T: AsRef<[u8]>
+where T: BlockData
 {
     pub fn new() -> Self {
         Self {
