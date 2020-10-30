@@ -1,5 +1,6 @@
 [workspace]
 members = [
     "gorp_blockchain",
+    "gorp_coin",
     "gorp_simple_miner",
 ]
