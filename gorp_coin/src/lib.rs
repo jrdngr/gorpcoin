@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use gorp_blockchain::{Block, Blockchain};
+use gorp_blockchain::{Blockchain, BlockData};
 
 pub type Hash = String;
 
@@ -9,9 +9,12 @@ pub struct GorpcoinBlockData {
     transactions: HashMap<Hash, Transaction>,
 }
 
-impl AsRef<[u8]> for GorpcoinBlockData {
-    fn as_ref(&self) -> &[u8] {
-        todo!()
+impl BlockData for GorpcoinBlockData {
+    fn into_bytes(&self) -> Vec<u8> {
+        self.transactions
+            .values()
+            .flat_map(BlockData::into_bytes)
+            .collect()
     }
 }
 
@@ -20,8 +23,11 @@ pub struct Transaction {
 
 }
 
-impl AsRef<[u8]> for Transaction {
-    fn as_ref(&self) -> &[u8] {
-        todo!()
+impl BlockData for Transaction {
+    fn into_bytes(&self) -> Vec<u8> {
+        self.inputs
+            .iter()
+            .flat_map(BlockData::into_bytes)
+            .collect()
     }
 }
