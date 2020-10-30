@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use gorp_blockchain::{Blockchain, BlockData};
 
 pub type Hash = String;
+pub type Address = String;
 
 pub type GorpcoinBlockchain = Blockchain<GorpcoinBlockData>;
 
@@ -18,9 +19,24 @@ impl BlockData for GorpcoinBlockData {
     }
 }
 
-pub struct Transaction {
-    inputs: Vec<Hash>,
+pub struct TransactionData {
+    value: u64,
+    signature: Hash,
+}
 
+impl BlockData for TransactionData {
+    fn into_bytes(&self) -> Vec<u8> {
+        self.value.to_le_bytes()
+            .iter()
+            .chain(self.signature.as_bytes())
+            .cloned()
+            .collect()
+    }
+}
+
+pub struct Transaction {
+    inputs: Vec<TransactionData>,
+    outputs: Vec<TransactionData>,
 }
 
 impl BlockData for Transaction {
@@ -28,6 +44,7 @@ impl BlockData for Transaction {
         self.inputs
             .iter()
             .flat_map(BlockData::into_bytes)
+            .chain(self.outputs.iter().flat_map(BlockData::into_bytes))
             .collect()
     }
 }
