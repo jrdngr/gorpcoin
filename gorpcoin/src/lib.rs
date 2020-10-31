@@ -3,7 +3,7 @@ pub mod error;
 pub mod transaction;
 pub mod utils;
 
-pub use blockchain::GorpcoinBlockchain;
+pub use blockchain::{GorpcoinBlock, GorpcoinBlockData, GorpcoinBlockchain};
 pub use transaction::{Transaction, TransactionData};
 
 pub type Hash = String;

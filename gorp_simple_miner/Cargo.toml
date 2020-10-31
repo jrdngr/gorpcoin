@@ -5,4 +5,4 @@ authors = ["Jordan Grace <jordan.t.grace@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-gorp_coin = { git = "https://github.com/picklenerd/gorpcoin", branch = "main" }
+gorpcoin = { git = "https://github.com/picklenerd/gorpcoin", branch = "main" }
