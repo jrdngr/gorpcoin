@@ -34,8 +34,8 @@ pub fn main() {
     let mut blockchain = GorpcoinBlockchain::new();
 
     loop {
-        let data = format!("{}", blockchain.current_difficulty());
-        println!("Mining with difficulty {}", data);
+        let data = GorpcoinBlockData::new();
+        println!("Mining with difficulty {}", blockchain.current_difficulty());
         mine_coin(data, &mut blockchain);
     }
 }
