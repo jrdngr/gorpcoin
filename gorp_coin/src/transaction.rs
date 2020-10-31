@@ -1,6 +1,7 @@
 use crate::Hash;
-use gorp_blockchain::BlockData;
+use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Transaction {
     inputs: Vec<TransactionData>,
     outputs: Vec<TransactionData>,
@@ -20,16 +21,23 @@ impl Transaction {
     }
 }
 
-impl BlockData for Transaction {
-    fn into_bytes(&self) -> Vec<u8> {
-        self.inputs
+impl From<&Transaction> for Vec<u8> {
+    fn from(transaction: &Transaction) -> Vec<u8> {
+        transaction
+            .inputs
             .iter()
-            .flat_map(BlockData::into_bytes)
-            .chain(self.outputs.iter().flat_map(BlockData::into_bytes))
+            .flat_map(|input| Vec::<u8>::from(input))
+            .chain(
+                transaction
+                    .outputs
+                    .iter()
+                    .flat_map(|output| Vec::<u8>::from(output)),
+            )
             .collect()
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TransactionData {
     value: u64,
     signature: Hash,
@@ -49,12 +57,13 @@ impl TransactionData {
     }
 }
 
-impl BlockData for TransactionData {
-    fn into_bytes(&self) -> Vec<u8> {
-        self.value
+impl From<&TransactionData> for Vec<u8> {
+    fn from(transaction_data: &TransactionData) -> Vec<u8> {
+        transaction_data
+            .value
             .to_le_bytes()
             .iter()
-            .chain(self.signature.as_bytes())
+            .chain(transaction_data.signature.as_bytes())
             .cloned()
             .collect()
     }

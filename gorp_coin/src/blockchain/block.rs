@@ -1,21 +1,17 @@
+use crate::blockchain::GorpcoinBlockData;
+use crate::utils;
 use serde::{Deserialize, Serialize};
 
-use crate::utils;
-use crate::BlockData;
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Block<T = Vec<u8>> {
-    data: T,
+pub struct GorpcoinBlock {
+    data: GorpcoinBlockData,
     timestamp: u64,
     previous_hash: Vec<u8>,
     nonce: u64,
 }
 
-impl<T> Block<T>
-where
-    T: BlockData,
-{
-    pub fn new(data: T, previous_hash: &[u8], nonce: u64) -> Self {
+impl GorpcoinBlock {
+    pub fn new(data: GorpcoinBlockData, previous_hash: &[u8], nonce: u64) -> Self {
         Self {
             data,
             timestamp: utils::unix_time(),
@@ -33,7 +29,7 @@ where
         }
     }
 
-    pub fn data(&self) -> &T {
+    pub fn data(&self) -> &GorpcoinBlockData {
         &self.data
     }
 
@@ -53,7 +49,7 @@ where
         use sha3::{Digest, Sha3_256};
 
         let mut hasher = Sha3_256::new();
-        hasher.update(&self.data.into_bytes());
+        hasher.update(&Vec::<u8>::from(&self.data));
         hasher.update(&self.timestamp.to_le_bytes());
         hasher.update(&self.nonce.to_le_bytes());
         hasher.update(&self.previous_hash);
@@ -84,12 +80,11 @@ mod tests {
 
     #[test]
     fn new_block() {
-        let data = Vec::from("Hello!");
+        let data = GorpcoinBlockData::new();
         let previous_hash = [0];
         let nonce = 0;
 
-        let block = Block::new(data, &previous_hash, nonce);
-        assert_eq!(block.data(), &Vec::from("Hello!"));
+        let block = GorpcoinBlock::new(data, &previous_hash, nonce);
         assert_eq!(block.previous_hash(), &[0]);
         assert_eq!(block.nonce(), 0);
     }
