@@ -1,16 +1,17 @@
+use gorp_blockchain::{Block, BlockData, Blockchain};
 use std::time::Instant;
-use gorp_blockchain::{Block, Blockchain, BlockData};
 
-pub fn mine_coin<T>(data: T, blockchain: &mut Blockchain<T>) 
-where T: BlockData,
-      T: Clone,
+pub fn mine_coin<T>(data: T, blockchain: &mut Blockchain<T>)
+where
+    T: BlockData,
+    T: Clone,
 {
     let start_time = Instant::now();
 
     let difficulty = blockchain.current_difficulty();
     let previous_hash = blockchain.last_hash();
     let mut nonce = 0;
-    
+
     loop {
         let block = Block::new(data.clone(), &previous_hash, nonce);
         if block.is_valid(difficulty) {
@@ -21,9 +22,9 @@ where T: BlockData,
                     println!("Successfully added block");
                     println!("Hash: 0x{}", hash_string);
                     println!("Took: {:#?}", duration);
-                    
+
                     return;
-                },
+                }
                 Err(e) => {
                     dbg!(e);
                 }

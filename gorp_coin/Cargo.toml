@@ -8,3 +8,5 @@ edition = "2018"
 
 [dependencies]
 gorp_blockchain = { path = "../gorp_blockchain" }
+hex = "0.4"
+sha3 = "0.9"

@@ -1,19 +1,18 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
-use crate::{utils, Block, BlockData, GorpCoinError, GorpCoinResult};
+use crate::{utils, Block, BlockData, GorpcoinError, GorpcoinResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Blockchain<T = Vec<u8>> {
     blocks: Vec<Block<T>>,
 }
 
-impl<T> Blockchain<T> 
-where T: BlockData
+impl<T> Blockchain<T>
+where
+    T: BlockData,
 {
     pub fn new() -> Self {
-        Self {
-            blocks: Vec::new(),
-        }
+        Self { blocks: Vec::new() }
     }
 
     pub fn blocks(&self) -> &[Block<T>] {
@@ -35,12 +34,12 @@ where T: BlockData
         difficulty_function(self.len())
     }
 
-    pub fn add_block(&mut self, block: Block<T>) -> GorpCoinResult<()> {
+    pub fn add_block(&mut self, block: Block<T>) -> GorpcoinResult<()> {
         let hash = block.hash();
         let difficulty = self.current_difficulty();
-                
+
         if !utils::has_valid_prefix(&hash, difficulty) {
-            return Err(GorpCoinError::IncorrectDifficulty);
+            return Err(GorpcoinError::IncorrectDifficulty);
         }
 
         let expected_previous_hash = match self.blocks.last() {
@@ -49,7 +48,7 @@ where T: BlockData
         };
 
         if expected_previous_hash != block.previous_hash() {
-            return Err(GorpCoinError::InvalidPreviousHash);
+            return Err(GorpcoinError::InvalidPreviousHash);
         }
 
         self.blocks.push(block);

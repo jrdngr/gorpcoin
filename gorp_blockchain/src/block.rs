@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::utils;
 use crate::BlockData;
@@ -11,8 +11,9 @@ pub struct Block<T = Vec<u8>> {
     nonce: u64,
 }
 
-impl<T> Block<T> 
-where T: BlockData,
+impl<T> Block<T>
+where
+    T: BlockData,
 {
     pub fn new(data: T, previous_hash: &[u8], nonce: u64) -> Self {
         Self {
@@ -57,19 +58,18 @@ where T: BlockData,
         hasher.update(&self.nonce.to_le_bytes());
         hasher.update(&self.previous_hash);
 
-        let hash = hasher.finalize()
-            .into_iter()
-            .collect();
+        let hash = hasher.finalize().into_iter().collect();
 
         hash
     }
 
     pub fn hash_string(&self) -> String {
-        let hash_string = self.hash()
+        let hash_string = self
+            .hash()
             .into_iter()
             .map(|byte| format!("{:x}", byte))
             .collect();
-        
+
         hash_string
     }
 
