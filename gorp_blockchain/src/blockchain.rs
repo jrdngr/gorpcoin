@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{utils, Block, BlockData, GorpcoinError, GorpcoinResult};
+use crate::{utils, Block, BlockData, GorpBlockchainError, GorpBlockchainResult};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Blockchain<T = Vec<u8>> {
@@ -34,12 +34,12 @@ where
         difficulty_function(self.len())
     }
 
-    pub fn add_block(&mut self, block: Block<T>) -> GorpcoinResult<()> {
+    pub fn add_block(&mut self, block: Block<T>) -> GorpBlockchainResult<()> {
         let hash = block.hash();
         let difficulty = self.current_difficulty();
 
         if !utils::has_valid_prefix(&hash, difficulty) {
-            return Err(GorpcoinError::IncorrectDifficulty);
+            return Err(GorpBlockchainError::IncorrectDifficulty);
         }
 
         let expected_previous_hash = match self.blocks.last() {
@@ -48,7 +48,7 @@ where
         };
 
         if expected_previous_hash != block.previous_hash() {
-            return Err(GorpcoinError::InvalidPreviousHash);
+            return Err(GorpBlockchainError::InvalidPreviousHash);
         }
 
         self.blocks.push(block);
