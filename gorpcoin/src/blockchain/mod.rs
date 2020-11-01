@@ -5,7 +5,7 @@ pub use block::GorpcoinBlock;
 pub use block_data::GorpcoinBlockData;
 
 use crate::error::{GorpcoinError, GorpcoinResult};
-use crate::utils;
+use crate::{utils, Transaction};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -57,6 +57,22 @@ impl GorpcoinBlockchain {
         self.blocks.push(block);
 
         Ok(())
+    }
+
+    pub fn is_transaction_valid(&self, transaction: &Transaction) -> bool {        
+        let mut input_total = 0;
+
+        for block in &self.blocks {
+            for input in transaction.inputs() {
+                if let Some(transaction_data) = block.data().transactions().get(input) {
+                    // This is wrong
+                    // We need signatures. I think it'll be more work to avoid it.
+                    input_total += transaction_data.output_total();
+                }
+            }
+        }
+
+        input_total >= transaction.output_total()
     }
 }
 

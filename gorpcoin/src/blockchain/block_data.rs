@@ -15,6 +15,10 @@ impl GorpcoinBlockData {
         }
     }
 
+    pub fn transactions(&self) -> &HashMap<Hash, Transaction> {
+        &self.transactions
+    }
+
     pub fn add_transaction(&mut self, transaction: Transaction) {
         use sha3::{Digest, Sha3_256};
 
